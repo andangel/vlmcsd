@@ -1,0 +1,17 @@
+﻿  crypto.c
+  crypto_windows.c
+  endian.c
+  helpers.c
+  kms.c
+  kmsdata.c
+  network.c
+  ntservice.c
+  output.c
+  rpc.c
+  shared_globals.c
+  vlmcsd.c
+  wingetopt.c
+  wintap.c
+  正在生成代码
+  已完成代码的生成
+  vlmcsd.vcxproj -> C:\Users\Dell\Desktop\vlmcsd\VisualStudio\..\bin\vlmcsd-Windows-x86.exe

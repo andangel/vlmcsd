@@ -1,0 +1,15 @@
+﻿  crypto.c
+  crypto_windows.c
+  dns_srv.c
+  endian.c
+  helpers.c
+  kms.c
+  kmsdata-full.c
+  network.c
+  output.c
+  rpc.c
+  shared_globals.c
+  vlmcs.c
+  wingetopt.c
+  vlmcs.vcxproj -> C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\vlmcs-Windows.exe
+  vlmcs.vcxproj -> C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\vlmcs-Windows.pdb (Partial PDB)

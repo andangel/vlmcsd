@@ -1,0 +1,16 @@
+﻿  crypto.c
+  crypto_windows.c
+  dns_srv.c
+  endian.c
+  helpers.c
+  kms.c
+  kmsdata-full.c
+  network.c
+  output.c
+  rpc.c
+  shared_globals.c
+  vlmcs.c
+  wingetopt.c
+  正在生成代码
+  已完成代码的生成
+  vlmcs.vcxproj -> C:\Users\APPLE\Desktop\vlmcsd\VisualStudio\..\bin\KeyManagementClient-Windows-x64.exe

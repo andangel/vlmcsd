@@ -1,0 +1,14 @@
+﻿  crypto.c
+  crypto_windows.c
+  endian.c
+  helpers.c
+  kms.c
+  libkms.c
+  network.c
+  output.c
+  rpc.c
+  shared_globals.c
+  vlmcs.c
+    正在创建库 C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\libkms-Windows32.lib 和对象 C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\libkms-Windows32.exp
+  libkms.vcxproj -> C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\libkms-Windows32.dll
+  libkms.vcxproj -> C:\Users\Dell\Desktop\vlmcsd\VisualStudio\Debug\libkms-Windows32.pdb (Partial PDB)
