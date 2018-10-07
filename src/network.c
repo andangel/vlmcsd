@@ -101,7 +101,7 @@ static int_fast8_t getSocketList(struct addrinfo **saList, const char *const add
 	char *szHost, *szPort;
 	size_t len = strlen(addr) + 1;
 
-	// Don't alloca too much
+	// Don't alloca too much 不要分配太多
 	if (len > 264) return FALSE;
 
 	char *addrcopy = (char*)alloca(len);
@@ -245,9 +245,9 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 		if (ip2str(szAddr, sizeof(szAddr), sa->ai_addr, (socklen_t)sa->ai_addrlen))
 		{
 			if (showHostName)
-				printf("Connecting to %s (%s) ... ", addr, szAddr);
+				printf("连接到 %s (%s) ... ", addr, szAddr);
 			else
-				printf("Connecting to %s ... ", szAddr);
+				printf("连接到 %s ... ", szAddr);
 
 			fflush(stdout);
 		}
@@ -273,7 +273,7 @@ SOCKET connectToAddress(const char *const addr, const int AddressFamily, int_fas
 
 		if (!connect(s, sa->ai_addr, (int)sa->ai_addrlen))
 		{
-			printf("successful\n");
+			printf("成功\n");
 			break;
 		}
 
@@ -310,7 +310,7 @@ static int_fast8_t allowSocketReuse(SOCKET s)
 	if (setsockopt(s, SOL_SOCKET, VLMCSD_SOCKET_OPTION, (sockopt_t)&socketOption, sizeof(socketOption)))
 	{
 #		ifdef _PEDANTIC
-		printerrorf("Warning: Socket option SO_REUSEADDR unsupported: %s\n", vlmcsd_strerror(socket_errno));
+		printerrorf("Warning: Socket 选项 SO_REUSEADDR 不受支持: %s\n", vlmcsd_strerror(socket_errno));
 #		endif // _PEDANTIC
 	}
 

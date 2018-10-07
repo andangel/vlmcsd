@@ -267,7 +267,7 @@ __pure unsigned int getOptionArgumentInt(const char o, const unsigned int min, c
 
 	if (!stringToInt(optarg, min, max, &result))
 	{
-		printerrorf("Fatal: Option \"-%c\" must be numeric between %u and %u.\n", o, min, max);
+		printerrorf("严重: 选项 \"-%c\" 必须是 %u 与 %u 之间的数值.\n", o, min, max);
 		exit(VLMCSD_EINVAL);
 	}
 
@@ -355,12 +355,12 @@ void randomNumberInit()
 // We always exit immediately if any OOM condition occurs
 __noreturn void OutOfMemory(void)
 {
-	errorout("Fatal: Out of memory");
+	errorout("严重: 内存不足");
 	exit(VLMCSD_ENOMEM);
 }
 
 
-void* vlmcsd_malloc(size_t len)//len60
+void* vlmcsd_malloc(size_t len)//32位系统是:len60
 {
 	void* buf = malloc(len);
 	if (!buf) OutOfMemory();
@@ -435,13 +435,13 @@ __pure BOOL getArgumentBool(int_fast8_t *result, const char *const argument)
 __noreturn static void dataFileReadError()
 {
 	int error = errno;
-	errorout("Fatal: Could not read %s: %s\n", fn_data, strerror(error));
+	errorout("严重: 无法读取 %s: %s\n", fn_data, strerror(error));
 	exit(error);
 }
 
 __noreturn static void dataFileFormatError()
 {
-	errorout("Fatal: %s is not a KMS data file\n", fn_data);
+	errorout("严重: %s 不是KMS数据文件\n", fn_data);
 	exit(VLMCSD_EINVAL);
 }
 #endif // NO_EXTERNAL_DATA
@@ -593,7 +593,7 @@ void loadKmsData()
 			fclose(file);
 
 #			if !defined(NO_LOG) && !defined(NO_SOCKETS)
-			if (!InetdMode) logger("Read KMS data file %s\n", fn_data);
+			if (!InetdMode) logger("读取KMS数据文件 %s\n", fn_data);
 #			endif // NO_LOG
 		}
 

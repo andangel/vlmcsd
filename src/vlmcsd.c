@@ -114,6 +114,7 @@ char* tapArgument = NULL;
 #endif // NO_TAP
 
 static const char* IniFileErrorMessage = "";
+//Ini文件错误缓冲区
 char* IniFileErrorBuffer = NULL;
 #define INIFILE_ERROR_BUFFERSIZE 256
 
@@ -353,31 +354,31 @@ static __noreturn void usage()
 #		endif // !SIMPLE_RPC
 #		endif // USE_MSRPC
 #		ifndef NO_PID_FILE
-		"  -p <file>\t\twrite pid to <file>\n"
+		"  -p <file>\t\t写入 pid 至 <文件>\n"
 #		endif // NO_PID_FILE
 #		ifndef NO_INI_FILE
-		"  -i <file>\t\tuse config file <file>\n"
+		"  -i <file>\t\t使用配置文件 <文件>\n"
 #		endif // NO_INI_FILE
 #		ifndef NO_EXTERNAL_DATA
-		"  -j <file>\t\tuse KMS data file <file>\n"
+		"  -j <file>\t\t使用KMS数据文件 <文件>\n"
 #		endif // !NO_EXTERNAL_DATA
 #		ifndef NO_CUSTOM_INTERVALS
-		"  -R <interval>\t\trenew activation every <interval> (default 1w)\n"
-		"  -A <interval>\t\tretry activation every <interval> (default 2h)\n"
+		"  -R <interval>\t\t每次激活更新 <间隔> (默认 1w)\n"
+		"  -A <interval>\t\t每次激活重试 <间隔> (默认 2h)\n"
 #		endif // NO_CUSTOM_INTERVALS
 #		ifndef NO_LOG
 #		ifndef _WIN32
 		"  -l syslog		log to syslog\n"
 #		endif // _WIN32
-		"  -l <file>\t\tlog to <file>\n"
-		"  -T0, -T1\t\tdisable/enable logging with time and date (default -T1)\n"
+		"  -l <文件>\t\t日志 至 <文件>\n"
+		"  -T0, -T1\t\t禁用/启用 记录时间和数据 (默认 -T1)\n"
 #		ifndef NO_VERBOSE_LOG
-		"  -v\t\t\tlog verbose\n"
-		"  -q\t\t\tdon't log verbose (default)\n"
+		"  -v\t\t\t记录详细日志\n"
+		"  -q\t\t\t不记录详细日志 (默认)\n"
 #		endif // NO_VERBOSE_LOG
 #		endif // NO_LOG
 #		ifndef NO_VERSION_INFORMATION
-		"  -V\t\t\tdisplay version information and exit\n"
+		"  -V\t\t\t显示版本信息并退出\n"
 #		endif // NO_VERSION_INFORMATION
 		,
 		Version, global_argv[0]);
@@ -395,7 +396,7 @@ __pure static BOOL getTimeSpanFromIniFile(DWORD* result, const char *const restr
 	DWORD val = timeSpanString2Minutes(argument);
 	if (!val)
 	{
-		IniFileErrorMessage = "Incorrect time span.";
+		IniFileErrorMessage = "时间跨度不正确.";
 		return FALSE;
 	}
 
@@ -412,7 +413,7 @@ __pure static DWORD getTimeSpanFromCommandLine(const char *const restrict arg, c
 
 	if (!val)
 	{
-		printerrorf("Fatal: No valid time span specified in option -%c.\n", optchar);
+		printerrorf("严重: 没有在选项中指定的有效时间范围 -%c.\n", optchar);
 		exit(VLMCSD_EINVAL);
 	}
 
@@ -438,22 +439,23 @@ static void ignoreIniFileParameter(uint_fast8_t iniFileParameterId)
 #define ignoreIniFileParameter(x)
 #endif // NO_INI_FILE
 
-
+//没有配置文件的情况下定义
 #ifndef NO_INI_FILE
+//获取INI文件参数布尔值
 static BOOL getIniFileArgumentBool(int_fast8_t *result, const char *const argument)
 {
-	IniFileErrorMessage = "Argument must be true/on/yes/1 or false/off/no/0";
+	IniFileErrorMessage = "参数必须为true / on / yes / 1 或 false / off / no / 0";
 	return getArgumentBool(result, argument);
 }
 
-
+//获取INI文件参数整数值
 static BOOL getIniFileArgumentInt(unsigned int *result, const char *const argument, const unsigned int min, const unsigned int max)
 {
 	unsigned int tempResult;
 
 	if (!stringToInt(argument, min, max, &tempResult))
 	{
-		vlmcsd_snprintf(IniFileErrorBuffer, INIFILE_ERROR_BUFFERSIZE, "Must be integer between %u and %u", min, max);
+		vlmcsd_snprintf(IniFileErrorBuffer, INIFILE_ERROR_BUFFERSIZE, "必须是 ％u 和 ％u 之间的整数", min, max);
 		IniFileErrorMessage = IniFileErrorBuffer;
 		return FALSE;
 	}
@@ -462,7 +464,7 @@ static BOOL getIniFileArgumentInt(unsigned int *result, const char *const argume
 	return TRUE;
 }
 
-
+//控制感叹号或斜线
 static __pure int isControlCharOrSlash(const char c)
 {
 	if ((unsigned char)c < '!') return TRUE;
@@ -470,13 +472,13 @@ static __pure int isControlCharOrSlash(const char c)
 	return FALSE;
 }
 
-
+//ini文件行下一个单词
 static void iniFileLineNextWord(const char **s)
 {
 	while (**s && isspace((int)**s)) (*s)++;
 }
 
-
+//从INI文件行设置HwId
 static BOOL setHwIdFromIniFileLine(const char **s, const uint32_t index)
 {
 	iniFileLineNextWord(s);
@@ -493,7 +495,7 @@ static BOOL setHwIdFromIniFileLine(const char **s, const uint32_t index)
 	return TRUE;
 }
 
-
+//从INI文件行设置EPID
 static BOOL setEpidFromIniFileLine(const char **s, const uint32_t index)
 {
 	iniFileLineNextWord(s);
@@ -526,7 +528,7 @@ static BOOL setEpidFromIniFileLine(const char **s, const uint32_t index)
 	return TRUE;
 }
 
-
+//设置INI文件参数
 static BOOL setIniFileParameter(uint_fast8_t id, const char *const iniarg)
 {
 	unsigned int result;
@@ -573,7 +575,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char *const iniarg)
 	case INI_PARAM_GID:
 	{
 		struct group *g;
-		IniFileErrorMessage = "Invalid group id or name";
+		IniFileErrorMessage = "无效的组ID或名称";
 		if (!(gname = vlmcsd_strdup(iniarg))) return FALSE;
 
 		if ((g = getgrnam(iniarg)))
@@ -586,7 +588,7 @@ static BOOL setIniFileParameter(uint_fast8_t id, const char *const iniarg)
 	case INI_PARAM_UID:
 	{
 		struct passwd *p;
-		IniFileErrorMessage = "Invalid user id or name";
+		IniFileErrorMessage = "无效的用户ID或名称";
 		if (!(uname = vlmcsd_strdup(iniarg))) return FALSE;
 
 		if ((p = getpwnam(iniarg)))
@@ -793,14 +795,14 @@ static BOOL getIniFileArgument(const char **s)
 
 	if (!**s)
 	{
-		IniFileErrorMessage = "missing argument after '='.";
+		IniFileErrorMessage = " '='之后缺少参数.";
 		return FALSE;
 	}
 
 	return TRUE;
 }
 
-
+//处理Ini文件参数
 static BOOL handleIniFileParameter(const char *s)
 {
 	uint_fast8_t i;
@@ -815,12 +817,13 @@ static BOOL handleIniFileParameter(const char *s)
 		return setIniFileParameter(IniFileParameterList[i].Id, s);
 	}
 
-	IniFileErrorMessage = "Unknown keyword.";
+	IniFileErrorMessage = "未知关键字.";
 	return FALSE;
 }
 
 
 #if !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
+//从Ini文件设置侦听套接字
 static BOOL setupListeningSocketsFromIniFile(const char *s)
 {
 	if (!maxsockets) return TRUE;
@@ -833,7 +836,7 @@ static BOOL setupListeningSocketsFromIniFile(const char *s)
 }
 #endif // !defined(NO_SOCKETS) && !defined(SIMPLE_SOCKETS) && !defined(USE_MSRPC)
 
-
+//读取ini文件
 static BOOL readIniFile(const uint_fast8_t pass)
 {
 	char  line[256];
@@ -878,7 +881,7 @@ static BOOL readIniFile(const uint_fast8_t pass)
 
 		if (lineParseError)
 		{
-			printerrorf("Warning: %s line %u: \"%s\". %s\n", fn_ini, lineNumber, line, IniFileErrorMessage);
+			printerrorf("警告: %s line %u: \"%s\". %s\n", fn_ini, lineNumber, line, IniFileErrorMessage);
 			continue;
 		}
 	}
@@ -895,7 +898,7 @@ static BOOL readIniFile(const uint_fast8_t pass)
 #		ifdef _NTSERVICE
 		if (!installService)
 #		endif // _NTSERVICE
-			logger("Read ini file %s\n", fn_ini);
+			logger("读取 ini 文件 %s\n", fn_ini);
 	}
 
 #	endif // !defined(NO_SOCKETS) && !defined(NO_LOG)
@@ -1044,7 +1047,7 @@ static DWORD daemonizeAndSetSignalAction()
 	{
 #ifndef NO_LOG
 		DWORD rc = GetLastError();
-		logger("Warning: Could not register Windows signal handler: Error %u\n", rc);
+		logger("警告: 无法注册Windows信号处理程序: 错误 %u\n", rc);
 #endif // NO_LOG
 	}
 
@@ -1310,7 +1313,7 @@ static void parseGeneralArguments() {
 		nodaemon = 1;
 #		else // _WIN32
 #		ifdef _PEDANTIC
-		printerrorf("Warning: Option -D has no effect in the Windows version of vlmcsd.\n");
+		printerrorf("警告: 选项 -D 在Windows版本的KeyManagementServer中没有任何效果.\n");
 #		endif // _PEDANTIC
 #		endif // _WIN32
 		break;
@@ -1338,7 +1341,7 @@ static void parseGeneralArguments() {
 #		ifdef _PEDANTIC
 		if (!IsValidLcid(Lcid))
 		{
-			printerrorf("Warning: %s is not a valid LCID.\n", optarg);
+			printerrorf("警告: %s 不是有效的LCID.\n", optarg);
 		}
 #		endif // _PEDANTIC
 
@@ -1413,7 +1416,7 @@ static void parseGeneralArguments() {
 #		if defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
 		printf("vlmcsd %s %i-bit\n", Version, sizeof(void*) == 4 ? 31 : (int)sizeof(void*) << 3);
 #		else
-		printf("vlmcsd %s %i-bit\n", Version, (int)sizeof(void*) << 3);
+		printf("KeyManagementServer %s %i-bit\n", Version, (int)sizeof(void*) << 3);
 #		endif // defined(__s390__) && !defined(__zarch__) && !defined(__s390x__)
 		printPlatform();
 		printCommonFlags();
@@ -1460,7 +1463,7 @@ static void writePidFile()
 #		ifndef NO_LOG
 		else
 		{
-			logger("Warning: Cannot write pid file '%s'. %s.\n", fn_pid, strerror(errno));
+			logger("警告: 无法写pid文件 '%s'. %s.\n", fn_pid, strerror(errno));
 		}
 #		endif // NO_LOG
 	}
@@ -1496,7 +1499,7 @@ void cleanup()
 #		endif // !defined(NO_LIMIT) && !defined(NO_SOCKETS) && !defined(_WIN32) && !__minix__
 
 #		ifndef NO_LOG
-		logger("vlmcsd %s was shutdown\n", Version);
+		logger("KeyManagementServer %s 被关闭\n", Version);
 #		endif // NO_LOG
 	}
 }
@@ -1580,7 +1583,7 @@ static void allocateSemaphore(void)
 
 		if (!((MaxTaskSemaphore = CreateSemaphoreA(NULL, MaxTasks, MaxTasks, NULL))))
 		{
-			printerrorf("Warning: Could not create semaphore: %s\n", vlmcsd_strerror(GetLastError()));
+			printerrorf("警告: 无法创建信号量: %s\n", vlmcsd_strerror(GetLastError()));
 			MaxTasks = SEM_VALUE_MAX;
 		}
 
@@ -1634,7 +1637,7 @@ int setupListeningSockets()
 #			ifdef INI_FILE
 			if (strcmp(fn_ini, INI_FILE))
 #			endif // INI_FILE
-				printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
+				printerrorf("警告: 无法读取 %s: %s\n", fn_ini, strerror(errno));
 		}
 	}
 #	endif
@@ -1668,7 +1671,7 @@ int setupListeningSockets()
 
 	if (!numsockets)
 	{
-		printerrorf("Fatal: Could not listen on any socket.\n");
+		printerrorf("严重: 无法监听任何 socket.\n");
 		return(!0);
 	}
 
@@ -1698,7 +1701,7 @@ int server_main(int argc, CARGV argv)//程序从这里开始
 }
 
 
-int newmain()
+int newmain()//如果不是服务启动就从这开始
 {
 #	if !defined(NO_RANDOM_EPID) || !defined(NO_CL_PIDS) || !defined(NO_INI_FILE)
 	KmsResponseParameters = (KmsResponseParam_t*)vlmcsd_malloc(sizeof(KmsResponseParam_t) * MIN_CSVLK);//malloc动态内存分配
@@ -1728,7 +1731,7 @@ int newmain()
 		int error;
 		if ((error = WSAStartup(0x0202, &wsadata)))//WSAStartup，即WSA(Windows Sockets Asynchronous，Windows异步套接字)的启动命令
 		{
-			printerrorf("Fatal: Could not initialize Windows sockets (Error: %d).\n", error);
+			printerrorf("严重: 无法初始化Windows套接字 (错误: %d).\n", error);
 			return error;
 		}
 	}
@@ -1777,7 +1780,7 @@ int newmain()
 #		ifdef INI_FILE
 		if (strcmp(fn_ini, INI_FILE))
 #		endif // INI_FILE
-			printerrorf("Warning: Can't read %s: %s\n", fn_ini, strerror(errno));
+			printerrorf("警告: 不能读取 %s: %s\n", fn_ini, strerror(errno));
 	}
 
 #	endif // NO_INI_FILE
@@ -1877,7 +1880,7 @@ int newmain()
 
 #	if !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 	if (!InetdMode)
-		logger("vlmcsd %s started successfully\n", Version);
+		logger("KeyManagementServer %s 成功启动\n", Version);
 #	endif // !defined(NO_LOG) && !defined(NO_SOCKETS) && !defined(USE_MSRPC)
 
 #	if defined(_NTSERVICE) && !defined(USE_MSRPC)

@@ -23,15 +23,15 @@ extern void cleanup();
 int newmain();
 
 #if MULTI_CALL_BINARY < 1
-#define server_main main
+#define server_main main //这里声明了main入口函数
 #else
 int server_main(int argc, CARGV argv);
 #endif
 
-#ifndef SA_NOCLDWAIT    // required for Cygwin
+#ifndef SA_NOCLDWAIT    // CygWin要求
 #define SA_NOCLDWAIT 0
 #endif
-
+//没有配置文件的声明
 #ifndef NO_INI_FILE
 #define INI_PARAM_RANDOMIZATION_LEVEL 1
 #define INI_PARAM_LCID 2
@@ -67,7 +67,7 @@ int server_main(int argc, CARGV argv);
 
 #define INI_FILE_PASS_1 1
 #define INI_FILE_PASS_2 2
-
+//初始化文件参数
 typedef struct IniFileParameter
 {
 	const char* const Name;
